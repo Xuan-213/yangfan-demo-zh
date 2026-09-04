@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>扬帆 YANG FAN — 数据驱动的实习生成长导航平台</title>
+<style>
+/* ===== UNIFIED DESIGN TOKENS (aligned with all system pages) ===== */
+:root {
+  --green: #2cc56f;
+  --green-dark: #16a34a;
+  --green-light: #ecfdf5;
+  --green-gradient: linear-gradient(180deg, #2cc56f 0%, #BEDC7C 100%);
+  --red: #ff2056;
+  --red-light: #fff0f0;
+  --yellow: #dca12b;
+  --yellow-light: #fff8e6;
+  --purple: #DD9ADC;
+  --purple-light: #f8f0ff;
+  --text: #1d2520;
+  --text-heading: #171a1f;
+  --text-secondary: #8a958f;
+  --text-muted: #80828a;
+  --text-nav: #666973;
+  --text-label: #777f8f;
+  --bg-app: #f7fbf8;
+  --bg-card: #FFFFFF;
+  --bg-stat: #f8f9fb;
+  --bg-dark: #1d2520;
+  --border: rgba(0,0,0,0.05);
+  --border-header: #eef2ef;
+  --shadow-card: 0px 14px 32px rgba(8,15,52,0.06);
+  --shadow-sm: 0px 1px 16px rgba(0,0,0,0.1);
+  --shadow-green: 0px 12px 11px rgba(44,197,111,0.2);
+  --font: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --r-pill: 9999px;
+  --r-btn: 16px;
+  --r-card: 24px;
+  --r-section: 28px;
+  --t-fast: 0.2s cubic-bezier(0.4,0,0.2,1);
+  --t-smooth: 0.3s cubic-bezier(0.4,0,0.2,1);
+  --t-spring: 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg-app); color: var(--text); line-height: 1.5; overflow-x: hidden; }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: #ccd0d5; border-radius: 3px; }
+
+/* ===== NAVIGATION ===== */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 0.571px solid var(--border-header); height: 72px; display: flex; align-items: center; padding: 0 40px; transition: all var(--t-smooth); }
+.nav.scrolled { box-shadow: 0px 4px 20px rgba(8,15,52,0.06); }
+.nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-brand h1 { font-size: 22px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.4px; font-family: 'Segoe UI', var(--font); }
+.nav-brand span { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+.nav-links { display: flex; gap: 32px; align-items: center; margin-left: auto; margin-right: 24px; }
+.nav-links a { text-decoration: none; font-size: 15px; font-weight: 500; color: var(--text-nav); transition: color var(--t-fast); }
+.nav-links a:hover { color: var(--green-dark); }
+.nav-cta { padding: 10px 24px; background: var(--green); color: #fff; border: none; border-radius: var(--r-pill); font-size: 15px; font-weight: 600; cursor: pointer; font-family: var(--font); transition: all var(--t-fast); white-space: nowrap; }
+.nav-cta:hover { filter: brightness(0.92); transform: translateY(-1px); box-shadow: var(--shadow-green); }
+
+/* ===== HERO ===== */
+.hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 40px 80px; position: relative; overflow: hidden; }
+.hero-bg { position: absolute; inset: 0; pointer-events: none; }
+.hero-bg .s1 { position: absolute; width: 900px; height: 900px; background: radial-gradient(circle, rgba(44,197,111,0.18), rgba(190,220,124,0.03)); border-radius: 50%; right: -200px; top: -150px; }
+.hero-bg .s2 { position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(44,197,111,0.12), rgba(248,212,200,0.04)); border-radius: 50%; left: -100px; bottom: -100px; }
+.hero-bg .s3 { position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, rgba(221,154,220,0.15), transparent); border-radius: 50%; left: 40%; top: 40%; }
+.hero-content { max-width: 720px; position: relative; z-index: 2; text-align: center; }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--green-light); color: var(--green-dark); padding: 6px 16px; border-radius: var(--r-pill); font-size: 14px; font-weight: 600; margin-bottom: 24px; }
+.hero-badge .dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse-dot 2s ease-in-out infinite; }
+@keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.5); } }
+.hero-title { font-size: 56px; font-weight: 800; color: var(--text-heading); line-height: 1.15; letter-spacing: -1.2px; margin-bottom: 24px; }
+.hero-title em { font-style: normal; background: var(--green-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-desc { font-size: 18px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 36px; max-width: 620px; margin-left: auto; margin-right: auto; }
+.hero-btns { display: flex; gap: 16px; align-items: center; justify-content: center; }
+.btn-primary { padding: 14px 32px; background: var(--green); color: #fff; border: none; border-radius: var(--r-pill); font-size: 17px; font-weight: 700; cursor: pointer; font-family: var(--font); transition: all var(--t-fast); box-shadow: var(--shadow-green); }
+.btn-primary:hover { filter: brightness(0.92); transform: translateY(-2px); }
+.btn-secondary { padding: 14px 32px; background: var(--bg-card); color: var(--text-heading); border: 1.5px solid #d8dcd9; border-radius: var(--r-pill); font-size: 17px; font-weight: 600; cursor: pointer; font-family: var(--font); transition: all var(--t-fast); }
+.btn-secondary:hover { border-color: var(--green); color: var(--green-dark); }
+.hero-visual { position: absolute; right: -80px; top: 50%; transform: translateY(-50%); z-index: 1; pointer-events: none; }
+.hero-visual .float-card { background: var(--bg-card); border-radius: var(--r-card); box-shadow: var(--shadow-card); padding: 24px; position: absolute; animation: float 6s ease-in-out infinite; }
+.hero-visual .float-card.c1 { width: 280px; top: -120px; right: 200px; animation-delay: 0s; }
+.hero-visual .float-card.c2 { width: 240px; top: 60px; right: 380px; animation-delay: -2s; }
+.hero-visual .float-card.c3 { width: 260px; top: 160px; right: 160px; animation-delay: -4s; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
+.float-card .fc-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.float-card .fc-av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 13px; }
+.float-card .fc-av.g { background: linear-gradient(135deg, var(--green), #34D399); }
+.float-card .fc-av.p { background: linear-gradient(135deg, #6366F1, #8B5CF6); }
+.float-card .fc-av.o { background: linear-gradient(135deg, #F59E0B, #FBBF24); }
+.float-card .fc-name { font-weight: 700; font-size: 14px; }
+.float-card .fc-role { font-size: 11px; color: var(--text-muted); }
+.float-card .fc-stat { font-size: 28px; font-weight: 800; color: var(--green); }
+.float-card .fc-label { font-size: 12px; color: var(--text-label); }
+.float-card .fc-bars { display: flex; gap: 4px; align-items: flex-end; height: 36px; margin-top: 8px; }
+.float-card .fc-bar { width: 8px; border-radius: 4px; background: var(--green); opacity: 0.3; }
+.float-card .fc-bar.hi { opacity: 1; }
+
+/* ===== SECTION COMMONS ===== */
+.section { padding: 100px 40px; }
+.section-label { font-size: 14px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+.section-title { font-size: 40px; font-weight: 800; color: var(--text-heading); letter-spacing: -0.6px; line-height: 1.2; margin-bottom: 16px; }
+.section-desc { font-size: 18px; color: var(--text-secondary); line-height: 1.7; max-width: 600px; }
+.container { max-width: 1200px; margin: 0 auto; }
+
+/* ===== PROBLEM SECTION ===== */
+.problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 56px; }
+.problem-card { background: var(--bg-card); border: 0.571px solid var(--border); border-radius: var(--r-card); padding: 32px; transition: all var(--t-smooth); position: relative; overflow: hidden; }
+.problem-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card); }
+.problem-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 3px 3px 0 0; }
+.problem-card.p1::before { background: var(--red); }
+.problem-card.p2::before { background: var(--yellow); }
+.problem-card.p3::before { background: var(--purple); }
+.problem-card .pc-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; }
+.problem-card .pc-icon.r { background: var(--red-light); }
+.problem-card .pc-icon.y { background: var(--yellow-light); }
+.problem-card .pc-icon.p { background: var(--purple-light); }
+.problem-card h3 { font-size: 20px; font-weight: 700; color: var(--text-heading); margin-bottom: 8px; }
+.problem-card .pain { font-size: 14px; color: var(--red); font-weight: 600; margin-bottom: 12px; }
+.problem-card .fix { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
+.problem-card .arrow-row { display: flex; align-items: center; gap: 8px; margin: 16px 0; }
+.problem-card .arrow-row .line { flex: 1; height: 1px; background: #e5e8e6; }
+.problem-card .arrow-row .arrow { font-size: 18px; color: var(--green); }
+
+/* ===== HOW IT WORKS ===== */
+.how-section { background: var(--bg-dark); color: #fff; padding: 100px 40px; }
+.how-section .section-label { color: rgba(255,255,255,0.7); }
+.how-section .section-title { color: #fff; }
+.how-section .section-desc { color: rgba(255,255,255,0.6); }
+.flow-row { display: flex; align-items: center; justify-content: center; gap: 0; margin-top: 56px; flex-wrap: wrap; }
+.flow-step { text-align: center; flex: 0 0 160px; position: relative; }
+.flow-step .step-num { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; margin: 0 auto 16px; transition: all var(--t-smooth); }
+.flow-step .step-num.s1 { background: rgba(44,197,111,0.25); color: #2cc56f; }
+.flow-step .step-num.s2 { background: rgba(99,102,241,0.25); color: #a5b4fc; }
+.flow-step .step-num.s3 { background: rgba(245,158,11,0.25); color: #fbbf24; }
+.flow-step .step-num.s4 { background: rgba(59,130,246,0.25); color: #93c5fd; }
+.flow-step .step-num.s5 { background: rgba(221,154,220,0.25); color: #DD9ADC; }
+.flow-step .step-label { font-size: 15px; font-weight: 700; }
+.flow-step .step-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+.flow-arrow { flex: 0 0 60px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,255,255,0.3); }
+
+/* ===== ROLES SECTION ===== */
+.roles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 56px; }
+.role-card { background: var(--bg-card); border: 0.571px solid var(--border); border-radius: var(--r-card); padding: 36px 28px; text-align: center; transition: all var(--t-smooth); cursor: pointer; text-decoration: none; display: block; color: inherit; }
+.role-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-card); }
+.role-card .rc-icon { width: 72px; height: 72px; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 20px; }
+.role-card .rc-icon.hr { background: linear-gradient(135deg, #eef7f1, #dcfce7); }
+.role-card .rc-icon.mentor { background: linear-gradient(135deg, #eef1ff, #dbeafe); }
+.role-card .rc-icon.intern { background: linear-gradient(135deg, #fef3c7, #fffbeb); }
+.role-card h3 { font-size: 22px; font-weight: 700; color: var(--text-heading); margin-bottom: 8px; }
+.role-card .rc-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+.role-card .rc-features { list-style: none; text-align: left; }
+.role-card .rc-features li { font-size: 14px; color: var(--text-secondary); padding: 6px 0; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+.role-card .rc-features li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+.role-card .rc-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 20px; font-size: 14px; font-weight: 600; color: var(--green); transition: gap var(--t-fast); }
+.role-card:hover .rc-link { gap: 10px; }
+
+/* ===== FEATURES ===== */
+.features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 56px; }
+.feature-card { background: var(--bg-card); border: 0.571px solid var(--border); border-radius: var(--r-card); padding: 32px; display: flex; gap: 20px; transition: all var(--t-smooth); }
+.feature-card:hover { box-shadow: var(--shadow-card); }
+.feature-card .ft-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+.feature-card .ft-icon.g { background: var(--green-light); }
+.feature-card .ft-icon.b { background: #dbeafe; }
+.feature-card .ft-icon.p { background: var(--purple-light); }
+.feature-card .ft-icon.y { background: var(--yellow-light); }
+.feature-card .ft-info h4 { font-size: 18px; font-weight: 700; color: var(--text-heading); margin-bottom: 6px; }
+.feature-card .ft-info p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+.feature-card .ft-info .ft-tag { display: inline-block; padding: 3px 10px; border-radius: var(--r-pill); font-size: 11px; font-weight: 700; margin-top: 8px; }
+.ft-tag.g { background: var(--green-light); color: var(--green-dark); }
+.ft-tag.b { background: #dbeafe; color: #2b7fff; }
+.ft-tag.p { background: var(--purple-light); color: #9333ea; }
+.ft-tag.y { background: var(--yellow-light); color: #a16207; }
+
+/* ===== STATS ===== */
+.stats-section { background: var(--bg-dark); padding: 80px 40px; color: #fff; }
+.stats-row { display: flex; justify-content: center; gap: 80px; flex-wrap: wrap; }
+.stat-item { text-align: center; }
+.stat-item .stat-num { font-size: 56px; font-weight: 800; color: var(--green); line-height: 1; }
+.stat-item .stat-label { font-size: 16px; color: rgba(255,255,255,0.6); margin-top: 8px; }
+
+/* ===== METHODOLOGY ===== */
+.method-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 56px; }
+.method-card { background: var(--bg-card); border: 0.571px solid var(--border); border-radius: var(--r-card); padding: 28px; text-align: center; transition: all var(--t-smooth); }
+.method-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card); }
+.method-card .mc-dot { width: 12px; height: 12px; border-radius: 50%; margin: 0 auto 16px; }
+.method-card .mc-dot.g { background: var(--green); }
+.method-card .mc-dot.p { background: var(--purple); }
+.method-card .mc-dot.y { background: var(--yellow); }
+.method-card .mc-dot.r { background: var(--red); }
+.method-card h4 { font-size: 17px; font-weight: 700; color: var(--text-heading); margin-bottom: 6px; }
+.method-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+/* ===== TESTIMONIAL ===== */
+.quote-card { background: var(--bg-card); border: 0.571px solid var(--border); border-radius: var(--r-card); padding: 48px; max-width: 800px; margin: 56px auto 0; text-align: center; box-shadow: var(--shadow-card); }
+.quote-card .quote-mark { font-size: 64px; color: var(--green); line-height: 1; opacity: 0.3; margin-bottom: -20px; }
+.quote-card .quote-text { font-size: 22px; font-weight: 600; color: var(--text-heading); line-height: 1.6; font-style: italic; margin-bottom: 16px; }
+.quote-card .quote-source { font-size: 14px; color: var(--text-secondary); }
+
+/* ===== CTA ===== */
+.cta-section { text-align: center; padding: 120px 40px; }
+.cta-card { background: var(--bg-dark); border-radius: var(--r-section); padding: 64px 40px; color: #fff; position: relative; overflow: hidden; }
+.cta-card::before { content: ''; position: absolute; width: 500px; height: 500px; background: radial-gradient(circle, rgba(44,197,111,0.2), transparent); border-radius: 50%; top: -200px; right: -100px; }
+.cta-card .cta-title { font-size: 40px; font-weight: 800; position: relative; z-index: 1; margin-bottom: 16px; }
+.cta-card .cta-desc { font-size: 18px; color: rgba(255,255,255,0.6); position: relative; z-index: 1; margin-bottom: 36px; }
+.cta-card .btn-primary { font-size: 18px; padding: 16px 40px; position: relative; z-index: 1; }
+
+/* ===== FOOTER ===== */
+.footer { background: #f0f4f1; padding: 60px 40px 32px; border-top: 0.571px solid var(--border); }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; max-width: 1200px; margin: 0 auto 40px; }
+.footer-brand h2 { font-size: 20px; font-weight: 800; color: var(--text-heading); margin-bottom: 8px; }
+.footer-brand p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; max-width: 280px; }
+.footer-col h4 { font-size: 15px; font-weight: 700; color: var(--text-heading); margin-bottom: 16px; }
+.footer-col a { display: block; font-size: 14px; color: var(--text-secondary); text-decoration: none; padding: 4px 0; transition: color var(--t-fast); }
+.footer-col a:hover { color: var(--green-dark); }
+.footer-bottom { border-top: 0.571px solid var(--border); padding-top: 24px; text-align: center; font-size: 13px; color: var(--text-muted); max-width: 1200px; margin: 0 auto; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.a-up { animation: fadeUp 0.6s cubic-bezier(0.4,0,0.2,1) both; }
+.a-up.d1 { animation-delay: 0.1s; } .a-up.d2 { animation-delay: 0.2s; } .a-up.d3 { animation-delay: 0.3s; } .a-up.d4 { animation-delay: 0.4s; } .a-up.d5 { animation-delay: 0.5s; }
+
+/* ===== FEATURE TABS ===== */
+.ft-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:40px 0 44px}
+.ft-tab{
+  padding:10px 22px;border-radius:9999px;font-size:15px;font-weight:600;
+  cursor:pointer;border:1.5px solid #eef2ef;background:#fff;color:var(--text-nav);
+  transition:all 0.25s cubic-bezier(0.16,1,0.3,1);font-family:var(--font);
+  display:flex;align-items:center;gap:6px;user-select:none;
+}
+.ft-tab:hover{background:var(--bg-stat);color:var(--text);border-color:#d8dcd9}
+.ft-tab.m{--role:var(--green);--role-light:var(--green-light);--role-dark:var(--green-dark)}
+.ft-tab.i{--role:var(--purple);--role-light:var(--purple-light);--role-dark:#9333ea}
+.ft-tab.h{--role:#1a56db;--role-light:#eff6ff;--role-dark:#1e40af}
+.ft-tab.h.active{box-shadow:0 4px 16px oklch(0.52 0.16 250 / 0.3)}
+.ft-tab.active{background:var(--role);color:#fff;border-color:var(--role);box-shadow:0 4px 16px oklch(0.60 0.17 145 / 0.25)}
+.ft-tab.i.active{box-shadow:0 4px 16px oklch(0.48 0.16 280 / 0.25)}
+.ft-tab.h.active{background:#1a56db;color:#fff;border-color:#1a56db;box-shadow:0 4px 16px oklch(0.52 0.16 250 / 0.3)}
+.ft-tab.h.active{box-shadow:0 4px 16px oklch(0.52 0.16 250 / 0.25)}
+.ft-tab .tab-icon{font-size:18px}
+.ft-tab .tab-arrow{display:none;font-size:12px;transition:transform 0.25s cubic-bezier(0.16,1,0.3,1))}
+.ft-tab.active .tab-arrow{display:inline;transform:translateX(2px)}
+
+/* Feature panel */
+.ft-panel{display:none}
+.ft-panel.active{display:block}
+.ft-panel.active .ft-core{animation:fadeUp 0.45s cubic-bezier(0.16,1,0.3,1) both}
+.ft-panel.active .ft-core:nth-child(1){animation-delay:0.05s}
+.ft-panel.active .ft-core:nth-child(2){animation-delay:0.12s}
+.ft-panel.active .ft-aux{animation:fadeUp 0.4s cubic-bezier(0.16,1,0.3,1) both}
+.ft-panel.active .ft-aux:nth-child(1){animation-delay:0.19s}
+.ft-panel.active .ft-aux:nth-child(2){animation-delay:0.24s}
+.ft-panel.active .ft-aux:nth-child(3){animation-delay:0.29s}
+
+/* Core card — prominent */
+.ft-core{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--r-card);padding:36px 32px;
+  display:flex;gap:22px;align-items:flex-start;
+  transition:all 0.25s cubic-bezier(0.16,1,0.3,1);
+  position:relative;overflow:hidden;
+}
+.ft-core:hover{transform:translateY(-3px);box-shadow:var(--shadow-card)}
+.ft-core.m{background:var(--green-light)}
+.ft-core.i{background:var(--purple-light)}
+.ft-core.h{background:#dbeafe;border-color:#93c5fd}
+.ft-core .fc-icon{
+  width:56px;height:56px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;flex-shrink:0;
+}
+.ft-core .fc-icon.m{background:var(--green-light)}
+.ft-core .fc-icon.i{background:var(--purple-light)}
+.ft-core .fc-icon.h{background:var(--info-light)}
+.ft-core h4{font-size:19px;font-weight:700;color:var(--text-heading);margin-bottom:6px}
+.ft-core p{font-size:14px;color:var(--text-secondary);line-height:1.65}
+.ft-core .fc-badge{
+  display:inline-block;padding:2px 10px;border-radius:9999px;
+  font-size:11px;font-weight:700;margin-bottom:8px;
+}
+.ft-core .fc-badge.m{background:var(--green-light);color:var(--green-dark)}
+.ft-core .fc-badge.i{background:var(--purple-light);color:var(--purple)}
+.ft-core .fc-badge.h{background:var(--info-light);color:var(--info)}
+
+/* Aux card — subdued */
+.ft-aux-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.ft-aux{
+  background:var(--bg-stat);border:1px solid transparent;
+  border-radius:14px;padding:18px 16px;text-align:left;
+  transition:all 0.2s ease;
+}
+.ft-aux:hover{background:#fff;border-color:var(--border);box-shadow:var(--shadow-xs)}
+.ft-aux h5{font-size:14px;font-weight:600;color:var(--text-heading);margin-bottom:3px}
+.ft-aux p{font-size:12px;color:var(--text-muted);line-height:1.5}
+
+@media(max-width:1024px){
+  .ft-aux-row{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:768px){
+  .ft-tabs{flex-direction:column;align-items:stretch}
+  .ft-tab{justify-content:center}
+  .ft-aux-row{grid-template-columns:1fr}
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1200px) {
+  .hero-visual { display: none; }
+  .features-grid { grid-template-columns: 1fr; }
+  .method-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero { padding: 100px 24px 60px; }
+  .hero-title { font-size: 36px; }
+  .hero-btns { flex-direction: column; align-items: flex-start; }
+  .section { padding: 60px 24px; }
+  .section-title { font-size: 30px; }
+  .problem-grid, .roles-grid { grid-template-columns: 1fr; }
+  .flow-row { flex-direction: column; gap: 16px; }
+  .flow-arrow { transform: rotate(90deg); }
+  .stats-row { gap: 40px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .how-section, .cta-section, .stats-section { padding: 60px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-brand">
+    <h1>扬帆</h1>
+    <span>YANG FAN</span>
+  </a>
+  <div class="nav-links">
+    <a href="#problem">痛点</a>
+    <a href="#how">方案</a>
+    <a href="#roles">角色</a>
+    <a href="#features">功能</a>
+    <a href="#method">理论</a>
+  </div>
+  <a href="signin.html" class="nav-cta" style="text-decoration:none">预约演示</a>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <div class="s1"></div>
+    <div class="s2"></div>
+    <div class="s3"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge a-up">
+      <span class="dot"></span> 数据驱动的实习生成长导航平台
+    </div>
+    <h1 class="hero-title a-up d1">
+      让带教<em>有方法</em><br>让学习<em>有成效</em>
+    </h1>
+    <p class="hero-desc a-up d2">
+      一套面向企业实习生的培养数字化管理平台，覆盖 HR 管理端、导师工作台、实习生成长导航三方角色。同一份数据，三面镜子。
+    </p>
+    <div class="hero-btns a-up d3">
+      <a href="signin.html" class="btn-primary" style="display:inline-flex;align-items:center;text-decoration:none">开始使用 →</a>
+      <a href="#how"><button class="btn-secondary">了解更多</button></a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="float-card c1">
+      <div class="fc-header">
+        <div class="fc-av g">马</div>
+        <div>
+          <div class="fc-name">马老师</div>
+          <div class="fc-role">4名学员</div>
+        </div>
+      </div>
+      <div class="fc-stat">78%</div>
+      <div class="fc-label">整体健康度</div>
+      <div class="fc-bars">
+        <div class="fc-bar hi" style="height:28px"></div>
+        <div class="fc-bar" style="height:20px"></div>
+        <div class="fc-bar hi" style="height:32px"></div>
+        <div class="fc-bar" style="height:16px"></div>
+        <div class="fc-bar hi" style="height:24px"></div>
+      </div>
+    </div>
+    <div class="float-card c2">
+      <div class="fc-header">
+        <div class="fc-av p">林</div>
+        <div>
+          <div class="fc-name">林小夏</div>
+          <div class="fc-role">产品实习生 · 42天</div>
+        </div>
+      </div>
+      <div class="fc-stat">82%</div>
+      <div class="fc-label">任务完成率</div>
+    </div>
+    <div class="float-card c3">
+      <div class="fc-header">
+        <div class="fc-av o">HR</div>
+        <div>
+          <div class="fc-name">张艺璇</div>
+          <div class="fc-role">HR 管理</div>
+        </div>
+      </div>
+      <div class="fc-stat">3</div>
+      <div class="fc-label">待处理关键任务</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROBLEM SECTION ===== -->
+<section class="section" id="problem">
+  <div class="container">
+    <p class="section-label a-up">痛点</p>
+    <h2 class="section-title a-up d1">三方困在<span style="color:var(--green)">一个问题</span>上</h2>
+    <p class="section-desc a-up d2">导师的经验在脑子里、实习生的困惑在私聊里、HR 的判断在追问里——三方没有一个共享的「事实来源」。</p>
+    <div class="problem-grid">
+      <div class="problem-card p1 a-up d2">
+        <div class="pc-icon r">🧑‍🏫</div>
+        <h3>导师：凭经验带教</h3>
+        <p class="pain">困境：缺乏标准化节奏，信息碎片化</p>
+        <div class="arrow-row"><span class="line"></span><span class="arrow">→</span><span class="line"></span></div>
+        <p class="fix">多名学员信息散落在不同渠道，不知谁该优先关注；周报堆积反馈滞后。优秀导师的方法论无法复制，随人员流动而消失。</p>
+      </div>
+      <div class="problem-card p2 a-up d3">
+        <div class="pc-icon y">🧑‍🎓</div>
+        <h3>实习生：不知身在何处</h3>
+        <p class="pain">困境：不知道学什么、处于什么阶段</p>
+        <div class="arrow-row"><span class="line"></span><span class="arrow">→</span><span class="line"></span></div>
+        <p class="fix">入职后缺乏清晰的成长框架，提交周报迟迟得不到反馈，能力短板不自知，每天在做事但无法串成有意义的成长曲线。</p>
+      </div>
+      <div class="problem-card p3 a-up d4">
+        <div class="pc-icon p">👩‍💼</div>
+        <h3>HR：被动应答危机</h3>
+        <p class="pain">困境：手动收集信息，风险事后才发现</p>
+        <div class="arrow-row"><span class="line"></span><span class="arrow">→</span><span class="line"></span></div>
+        <p class="fix">招聘同学频繁追问适岗情况，需手动拼凑答案；导师带教质量不可量化；胜任力问题往往到了转正答辩才暴露。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="how-section" id="how">
+  <div class="container">
+    <p class="section-label a-up">解决方案</p>
+    <h2 class="section-title a-up d1">识别 → 诊断 → 动作 → 追踪 → 评估</h2>
+    <p class="section-desc a-up d2">五环节数据闭环：培养产出数据 → 评估诊断差异 → 差异驱动因材施教 → 更精准的下一轮培养 → 阶段评估。每循环一次，系统对每位学员的理解便加深一层，让带教从"凭经验"升级为"数据驱动"。</p>
+    <div class="flow-row a-up d3">
+      <div class="flow-step">
+        <div class="step-num s1">🔍</div>
+        <div class="step-label">识别</div>
+        <div class="step-sub">九宫格双轴定位<br>五维胜任力雷达图</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num s2">🩺</div>
+        <div class="step-label">诊断</div>
+        <div class="step-sub">业务完成率<br>业务完成质量</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num s3">🎯</div>
+        <div class="step-label">动作</div>
+        <div class="step-sub">个性化带教策略<br>AI追问实验室</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num s4">📈</div>
+        <div class="step-label">追踪</div>
+        <div class="step-sub">成长阶段总结<br>成长曲线实时更新</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <div class="step-num s5">🏆</div>
+        <div class="step-label">评估</div>
+        <div class="step-sub">实时监控成长状态<br>数据驱动转正决策</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ROLES SECTION ===== -->
+<section class="section" id="roles">
+  <div class="container">
+    <p class="section-label a-up">三方角色</p>
+    <h2 class="section-title a-up d1">同一份数据，<span style="color:var(--green)">三面镜子</span></h2>
+    <p class="section-desc a-up d2">不是三套独立的工具，而是围绕共享数据层构建的三个协作视角。</p>
+    <div class="roles-grid">
+      <a href="signin.html?role=mentor" class="role-card a-up d2">
+        <div class="rc-icon mentor">🧑‍🏫</div>
+        <h3>导师工作台</h3>
+        <p class="rc-subtitle">从凭经验到数据驱动 · 因材施教</p>
+        <ul class="rc-features">
+          <li>Hero 待办面板：周报/任务/社区 三 Tab 聚合</li>
+          <li>带教方案库：学→练→审→复盘 有序任务链</li>
+          <li>五维雷达图 + 培养建议：诊断→建议→指派 三步闭环</li>
+        </ul>
+        <span class="rc-link">进入导师工作台 →</span>
+      </a>
+      <a href="signin.html?role=intern" class="role-card a-up d3">
+        <div class="rc-icon intern">🧑‍🎓</div>
+        <h3>实习生成长导航</h3>
+        <p class="rc-subtitle">从迷茫到清晰 · 成长可见</p>
+        <ul class="rc-features">
+          <li>五维雷达图 + 短板高亮：看见自己的能力形状</li>
+          <li>四阶段成长导航：融入→成长→实战→总结</li>
+          <li>AI 辅助周报：梳理结构/追问细节/润色表达</li>
+        </ul>
+        <span class="rc-link">进入实习生工作台 →</span>
+      </a>
+      <a href="signin.html?role=hr" class="role-card a-up d4">
+        <div class="rc-icon hr">👩‍💼</div>
+        <h3>HR 管理端</h3>
+        <p class="rc-subtitle">从被动应答到主动发现 · 数据驱动</p>
+        <ul class="rc-features">
+          <li>部门药丸筛选 + 全局 KPI：一键下钻任意部门</li>
+          <li>团队能力叠加雷达图：组织层面能力诊断</li>
+          <li>风险预警自动识别：异常信号实时呈现在待办面板</li>
+        </ul>
+        <span class="rc-link">进入 HR 工作台 →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="section" id="features" style="background: #fff;">
+  <div class="container">
+    <p class="section-label a-up">核心功能</p>
+    <h2 class="section-title a-up d1">三大视角 · <span style="color:var(--green)">六大核心亮点</span></h2>
+    <p class="section-desc a-up d2">每个角色两个核心能力，其余功能环抱四周。点击切换视角。</p>
+
+    <!-- Tab pills -->
+    <div class="ft-tabs a-up d2" id="ftTabs">
+      <button class="ft-tab m active" data-role="mentor">
+        <span class="tab-icon">🧑‍🏫</span> 导师视角 <span class="tab-arrow">→</span>
+      </button>
+      <button class="ft-tab i" data-role="intern">
+        <span class="tab-icon">🧑‍🎓</span> 实习生视角 <span class="tab-arrow">→</span>
+      </button>
+      <button class="ft-tab h" data-role="hr">
+        <span class="tab-icon">👩‍💼</span> HR 视角 <span class="tab-arrow">→</span>
+      </button>
+    </div>
+
+    <!-- ====== 导师 ====== -->
+    <div class="ft-panel active" data-panel="mentor">
+      <div class="features-grid" style="margin-top:0">
+        <div class="ft-core m">
+          <div class="fc-icon m">📚</div>
+          <div>
+            <span class="fc-badge m">★ 核心亮点</span>
+            <h4>带教方案库</h4>
+            <p>针对学员画像（岗位-阶段-短板）组装「学微课→做练习→接受Review→复盘面谈」有序任务链，一键指派。优秀方案在广场展示复用数据，隐性经验转化为组织资产。</p>
+          </div>
+        </div>
+        <div class="ft-core m">
+          <div class="fc-icon m">📡</div>
+          <div>
+            <span class="fc-badge m">★ 核心亮点</span>
+            <h4>五维雷达图 + 培养建议</h4>
+            <p>展示团队能力剖面，自动标注最低维度，右侧同步推送针对性培养内容与指派按钮，实现诊断→建议→指派三步闭环。</p>
+          </div>
+        </div>
+      </div>
+      <div class="ft-aux-row">
+        <div class="ft-aux"><h5>📋 Hero 待办面板</h5><p>周报·任务·社区 三Tab，数字计数器</p></div>
+        <div class="ft-aux"><h5>🟢🟣🔴 健康快照三卡片</h5><p>高潜/正常/需关注分层，风险前置</p></div>
+        <div class="ft-aux"><h5>💬 SBI 周报评阅</h5><p>情境→行为→影响，结构化反馈</p></div>
+      </div>
+    </div>
+
+    <!-- ====== 实习生 ====== -->
+    <div class="ft-panel" data-panel="intern">
+      <div class="features-grid" style="margin-top:0">
+        <div class="ft-core i">
+          <div class="fc-icon i">🤖</div>
+          <div>
+            <span class="fc-badge i">★ 核心亮点</span>
+            <h4>AI 辅助周报</h4>
+            <p>AI 退后一步，提供梳理结构、追问细节、润色表达三种认知辅助。追问用预置题库而非 AI 生成——AI 是认知脚手架，教思考不代笔。</p>
+          </div>
+        </div>
+        <div class="ft-core i">
+          <div class="fc-icon i">🕐</div>
+          <div>
+            <span class="fc-badge i">★ 核心亮点</span>
+            <h4>方案步骤时间线</h4>
+            <p>将导师方案展开为垂直时间线，展示学→练→审→复盘逻辑链条。当前步骤高亮带操作按钮，支持标记阻塞主动举手求助。</p>
+          </div>
+        </div>
+      </div>
+      <div class="ft-aux-row">
+        <div class="ft-aux"><h5>📊 五维能力雷达图</h5><p>五个维度评分，短板红色标注</p></div>
+        <div class="ft-aux"><h5>🗺️ 四阶段成长导航</h5><p>融入→成长→实战→总结，时间地图</p></div>
+        <div class="ft-aux"><h5>⭐ 导师寄语 + 激励徽章</h5><p>正向反馈即时化、可视化</p></div>
+      </div>
+    </div>
+
+    <!-- ====== HR ====== -->
+    <div class="ft-panel" data-panel="hr">
+      <div class="features-grid" style="margin-top:0">
+        <div class="ft-core h">
+          <div class="fc-icon h">📊</div>
+          <div>
+            <span class="fc-badge h">★ 核心亮点</span>
+            <h4>团队能力叠加雷达图</h4>
+            <p>五维雷达图同时叠加三个部门的能力曲线 + 公司平均基准线，自动计算差距并告警（≥0.5 黄色 / ≥0.8 红色），为部门对比提供统一视觉坐标系。</p>
+          </div>
+        </div>
+        <div class="ft-core h">
+          <div class="fc-icon h">⚠️</div>
+          <div>
+            <span class="fc-badge h">★ 核心亮点</span>
+            <h4>风险预警自动识别</h4>
+            <p>系统自动识别异常信号（连续3周业务偏弱、导师健康分骤降、周报超48小时未评阅），在Hero待办面板与KPI卡片中实时呈现，无需HR主动搜索。</p>
+          </div>
+        </div>
+      </div>
+      <div class="ft-aux-row">
+        <div class="ft-aux"><h5>💊 部门药丸筛选</h5><p>一键切换，所有图表同步更新</p></div>
+        <div class="ft-aux"><h5>❤️ 导师健康分体系</h5><p>0-100 量化，<75 自动预警</p></div>
+        <div class="ft-aux"><h5>✅ 方案审核 + 方案广场</h5><p>知识资产守门人，复用数据自传播</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="stats-section">
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-item a-up">
+        <div class="stat-num">20</div>
+        <div class="stat-label">实习生覆盖</div>
+      </div>
+      <div class="stat-item a-up d1">
+        <div class="stat-num">6</div>
+        <div class="stat-label">认证导师</div>
+      </div>
+      <div class="stat-item a-up d2">
+        <div class="stat-num">3</div>
+        <div class="stat-label">核心部门</div>
+      </div>
+      <div class="stat-item a-up d3">
+        <div class="stat-num">5</div>
+        <div class="stat-label">闭环环节</div>
+      </div>
+      <div class="stat-item a-up d4">
+        <div class="stat-num">12x</div>
+        <div class="stat-label">开发效率提升</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== METHODOLOGY ===== -->
+<section class="section" id="method">
+  <div class="container">
+    <p class="section-label a-up">理论底座</p>
+    <h2 class="section-title a-up d1">建立在三重理论交叉验证之上</h2>
+    <p class="section-desc a-up d2">学习理论 × 教学设计理论 × 人才发展理论，围绕"知其心 → 施其教 → 验其效 → 聚其道"梯度铺开。</p>
+    <div class="method-grid">
+      <div class="method-card a-up d2">
+        <div class="mc-dot g"></div>
+        <h4>小胜原理</h4>
+        <p>设置阶段性里程碑、进度可视化，帮助学员清晰掌控转正节奏，有效减轻迷茫感。</p>
+      </div>
+      <div class="method-card a-up d2">
+        <div class="mc-dot p"></div>
+        <h4>ADDIE 模型</h4>
+        <p>分析 → 设计 → 开发 → 实施 → 评估，将教学设计五步流程完整嵌入系统功能。</p>
+      </div>
+      <div class="method-card a-up d3">
+        <div class="mc-dot y"></div>
+        <h4>SECI 知识萃取</h4>
+        <p>社会化 → 外显化 → 组合化 → 内隐化，将个人经验转化为组织知识资产。</p>
+      </div>
+      <div class="method-card a-up d3">
+        <div class="mc-dot r"></div>
+        <h4>九宫格人才矩阵</h4>
+        <p>绩效 × 潜力双轴定位，辅以四级色标自动触发差异化培养策略，推动数据驱动决策。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== QUOTE ===== -->
+<section class="section" style="padding-bottom: 40px;">
+  <div class="container">
+    <div class="quote-card a-up">
+      <div class="quote-mark">"</div>
+      <p class="quote-text">学者有四失，教者必知之……知其心，然后能救其失也。</p>
+      <p class="quote-source">——《礼记·学记》</p>
+      <p style="margin-top: 12px; font-size: 14px; color: var(--text-muted);">
+        两千年前的教育者已经说清楚了一件事：教的人必须先搞清楚教学对象的特点，才能因材施教。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-card a-up">
+      <h2 class="cta-title">让带教有方法，让学习有成效</h2>
+      <p class="cta-desc">从今天开始，让每一位导师因材施教，让每一位实习生看清自己的成长路径。</p>
+      <a href="signin.html" class="btn-primary" style="display:inline-flex;align-items:center;text-decoration:none">预约演示 扬帆 →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h2>扬帆 YANG FAN</h2>
+      <p>数据驱动的实习生成长导航平台。让带教有方法，让学习有成效。</p>
+    </div>
+    <div class="footer-col">
+      <h4>角色入口</h4>
+      <a href="signin.html">导师工作台</a>
+      <a href="signin.html">实习生成长导航</a>
+      <a href="signin.html">HR 管理端</a>
+    </div>
+    <div class="footer-col">
+      <h4>核心功能</h4>
+      <a href="#features">带教方案库</a>
+      <a href="#features">五维雷达图</a>
+      <a href="#features">AI 辅助周报</a>
+      <a href="#features">风险预警识别</a>
+    </div>
+    <div class="footer-col">
+      <h4>理论基础</h4>
+      <a href="#method">小胜原理</a>
+      <a href="#method">ADDIE 模型</a>
+      <a href="#method">SECI 模型</a>
+      <a href="#method">九宫格矩阵</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 扬帆 YANG FAN — 数据驱动的实习生成长导航平台. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+// Nav scroll shadow
+window.addEventListener('scroll', function() {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// Feature Tab Switching
+(function(){
+  var tabs = document.querySelectorAll('.ft-tab');
+  var panels = document.querySelectorAll('.ft-panel');
+  var activePanel = panels[0];
+  var switching = false;
+
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      if (switching || tab.classList.contains('active')) return;
+      switching = true;
+
+      var role = tab.dataset.role;
+
+      // Update tabs
+      tabs.forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+
+      // Switch panels — hide current, show target
+      panels.forEach(function(p){
+        if (p.dataset.panel === role) {
+          p.style.display = 'block';
+          // Reset animations by forcing reflow then adding class
+          p.classList.remove('active');
+          void p.offsetWidth;
+          p.classList.add('active');
+          activePanel = p;
+        } else {
+          p.classList.remove('active');
+          p.style.display = 'none';
+        }
+      });
+
+      setTimeout(function(){ switching = false; }, 450);
+    });
+  });
+})();
+
+// Scroll-triggered animations
+(function() {
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.style.animationPlayState = 'running';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.a-up').forEach(function(el) {
+    observer.observe(el);
+  });
+})();
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    var target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

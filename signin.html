@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>扬帆 - 登录</title>
+<style>
+:root{--green:#2cc56f;--text:#202224;--text-secondary:#4d4e50;--text-muted:#a6a6a6;--bg-input:#f1f4f9;--border-input:#d8d8d8;--font:'Segoe UI','Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:#fff;color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.bg-shapes{position:fixed;inset:-57% -23% -94% -6%;pointer-events:none;z-index:0}
+.bg-shape{position:absolute;border-radius:50%;opacity:0.3}
+.bg-shape.s1{width:895px;height:895px;background:radial-gradient(circle,rgba(44,197,111,0.35),rgba(190,220,124,0.05));left:10%;top:20%}
+.bg-shape.s2{width:1242px;height:1242px;background:radial-gradient(circle,rgba(248,212,200,0.3),rgba(130,212,159,0.04));left:40%;top:-30%}
+.bg-shape.s3{width:1332px;height:1332px;background:radial-gradient(circle,rgba(44,197,111,0.25),rgba(248,212,200,0.08));right:-35%;bottom:-40%}
+.bg-shape.s4{width:1100px;height:1050px;background:radial-gradient(circle,rgba(248,212,200,0.28),rgba(44,197,111,0.04));right:10%;top:-35%}
+.bg-shape.s5{width:895px;height:879px;background:radial-gradient(circle,rgba(44,197,111,0.28),rgba(248,212,200,0.06));left:5%;bottom:-30%}
+.login-wrapper{position:relative;z-index:1;animation:fadeIn .4s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.login-card{width:630px;background:#fff;border-radius:24px;padding:50px 57px;box-shadow:0px 1px 40px rgba(0,0,0,0.1),0px 1px 1px rgba(0,0,0,0.1)}
+.card-title{font-size:32px;font-weight:700;color:var(--text);text-align:center;margin-bottom:8px;letter-spacing:-0.11px}
+.card-subtitle{font-size:18px;font-weight:600;color:var(--text);text-align:center;opacity:0.8;margin-bottom:32px}
+.role-label{font-size:18px;font-weight:600;color:var(--text);opacity:0.8;margin-bottom:10px}
+.role-tabs{display:flex;gap:25px;margin-bottom:28px;padding-top:10px}
+.role-tab{flex:0 0 115px;padding:10px;text-align:center;font-size:20px;font-weight:500;color:var(--text-secondary);background:var(--bg-input);border:none;border-radius:8px;cursor:pointer;transition:all .25s ease;font-family:var(--font)}
+.role-tab.active{background:var(--green);color:#fff}
+.f-grp{margin-top:28px}.f-grp-sm{margin-top:24px}
+.f-lbl{font-size:18px;font-weight:600;color:var(--text);opacity:0.8;margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline}
+.f-lbl a{font-size:18px;font-weight:600;color:var(--text);opacity:0.6;text-decoration:none}.f-lbl a:hover{color:var(--green);opacity:1}
+.f-inp{width:100%;height:56px;background:var(--bg-input);border:0.635px solid var(--border-input);border-radius:8px;padding:0 16px;font-size:18px;font-family:var(--font);color:var(--text);outline:none}.f-inp:focus{border-color:var(--green)}
+.f-inp::placeholder{color:var(--text-muted)}.f-inp.error{border-color:#ff2056}
+.remember-row{display:flex;align-items:center;gap:12px;cursor:pointer;padding:24px 0 28px}
+.chk-wrap{width:24px;height:24px;border:0.635px solid #a3a3a3;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}.chk-wrap.checked{background:var(--green);border-color:var(--green)}
+.chk-wrap svg{width:14px;height:14px;opacity:0}.chk-wrap.checked svg{opacity:1}.rm-lbl{font-size:18px;font-weight:600;color:var(--text);opacity:0.6;user-select:none}
+.btn-signin{width:100%;height:56px;background:var(--green);border:none;border-radius:8px;font-size:20px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font)}.btn-signin:hover{opacity:0.9}
+.bottom-link{text-align:center;margin-top:24px;font-size:18px;font-weight:600;color:var(--text);opacity:0.65}.bottom-link a{font-weight:700;text-decoration:underline;cursor:pointer;background:linear-gradient(to bottom,var(--green),#bedc7c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.success-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.97);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .3s ease}.success-overlay.show{opacity:1;pointer-events:auto}
+.s-icon{width:72px;height:72px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:36px;color:#fff;animation:popIn .4s cubic-bezier(0.34,1.56,0.64,1)}@keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
+.s-msg{font-size:22px;font-weight:700;color:var(--text);margin-top:18px}.s-sub{font-size:15px;color:var(--text-muted);margin-top:6px}
+.toast-container{position:fixed;top:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px}
+.toast{background:#fff;border-radius:16px;padding:12px 16px;box-shadow:0 4px 16px rgba(0,0,0,0.07);font-size:13px;font-weight:500;animation:slideIn .2s ease;max-width:360px}@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:680px){.login-card{width:calc(100vw-32px);padding:32px 24px}.role-tabs{gap:12px}.role-tab{flex:auto;padding:8px 12px;font-size:16px}.card-title{font-size:24px}}
+</style>
+</head>
+<body>
+<div class="bg-shapes"><div class="bg-shape s1"></div><div class="bg-shape s2"></div><div class="bg-shape s3"></div><div class="bg-shape s4"></div><div class="bg-shape s5"></div></div>
+<div class="login-wrapper"><div class="login-card">
+<h1 class="card-title">登录账户</h1><p class="card-subtitle">请输入邮箱和密码以继续</p>
+<p class="role-label">身份选择</p>
+<div class="role-tabs">
+<button class="role-tab active" data-role="mentor" onclick="sel('mentor',this)">导师</button>
+<button class="role-tab" data-role="intern" onclick="sel('intern',this)">实习生</button>
+<button class="role-tab" data-role="hr" onclick="sel('hr',this)">HR</button>
+</div>
+<div class="f-grp"><label class="f-lbl">邮箱地址：</label><input class="f-inp" type="email" id="email" placeholder="请输入邮箱地址" autocomplete="email"></div>
+<div class="f-grp-sm"><label class="f-lbl">密码 <a href="#">忘记密码？</a></label><input class="f-inp" type="password" id="pw" placeholder="············" autocomplete="current-password"></div>
+<div class="remember-row" onclick="togRemember()"><div class="chk-wrap" id="chk"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2"><polyline points="3,7 6,10 11,4"/></svg></div><span class="rm-lbl">记住密码</span></div>
+<button class="btn-signin" onclick="signIn()">登录</button>
+<p class="bottom-link">还没有账户？ <a href="#">创建账户</a></p>
+</div></div>
+<div class="success-overlay" id="success"><div class="s-icon">✓</div><div class="s-msg">登录成功！</div><div class="s-sub" id="sSub">正在跳转...</div></div>
+<div class="toast-container" id="toasts"></div>
+<script>
+var params=new URLSearchParams(window.location.search);
+var urlRole=params.get('role');
+var role=(urlRole==='mentor'||urlRole==='intern'||urlRole==='hr')?urlRole:'mentor';
+var rm=false;
+document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.role-tab').forEach(function(t){t.classList.toggle('active',t.dataset.role===role);});});
+function sel(r,b){role=r;document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));b.classList.add('active')}
+function togRemember(){rm=!rm;document.getElementById('chk').classList.toggle('checked',rm)}
+function signIn(){
+const e=document.getElementById('email').value.trim(),p=document.getElementById('pw').value.trim();
+if(!e){document.getElementById('email').classList.add('error');setTimeout(()=>document.getElementById('email').classList.remove('error'),1500);return}
+if(!p){document.getElementById('pw').classList.add('error');setTimeout(()=>document.getElementById('pw').classList.remove('error'),1500);return}
+const r={mentor:'mentor_dashboard.html',intern:'intern.html',hr:'hr_v3_dashboard.html'},n={mentor:'扬帆 导师工作台',intern:'扬帆 实习生系统',hr:'扬帆 HR管理'};
+document.getElementById('sSub').textContent='正在跳转到 '+n[role];document.getElementById('success').classList.add('show');
+setTimeout(()=>{window.location.href=r[role]},1000);
+}
+,2000)}
+document.addEventListener('keydown',e=>{if(e.key==='Enter')signIn()});
+</script>
+</body></html>
