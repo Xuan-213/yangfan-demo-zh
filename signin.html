@@ -1,82 +1,362 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>扬帆 - 登录</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>扬帆 — 登录</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
 <style>
-:root{--green:#2cc56f;--text:#202224;--text-secondary:#4d4e50;--text-muted:#a6a6a6;--bg-input:#f1f4f9;--border-input:#d8d8d8;--font:'Segoe UI','Inter',-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}
-*{box-sizing:border-box;margin:0;padding:0}
-html{font-size:16px;-webkit-font-smoothing:antialiased}
-body{font-family:var(--font);background:#fff;color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.bg-shapes{position:fixed;inset:-57% -23% -94% -6%;pointer-events:none;z-index:0}
-.bg-shape{position:absolute;border-radius:50%;opacity:0.3}
-.bg-shape.s1{width:895px;height:895px;background:radial-gradient(circle,rgba(44,197,111,0.35),rgba(190,220,124,0.05));left:10%;top:20%}
-.bg-shape.s2{width:1242px;height:1242px;background:radial-gradient(circle,rgba(248,212,200,0.3),rgba(130,212,159,0.04));left:40%;top:-30%}
-.bg-shape.s3{width:1332px;height:1332px;background:radial-gradient(circle,rgba(44,197,111,0.25),rgba(248,212,200,0.08));right:-35%;bottom:-40%}
-.bg-shape.s4{width:1100px;height:1050px;background:radial-gradient(circle,rgba(248,212,200,0.28),rgba(44,197,111,0.04));right:10%;top:-35%}
-.bg-shape.s5{width:895px;height:879px;background:radial-gradient(circle,rgba(44,197,111,0.28),rgba(248,212,200,0.06));left:5%;bottom:-30%}
-.login-wrapper{position:relative;z-index:1;animation:fadeIn .4s ease both}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.login-card{width:630px;background:#fff;border-radius:24px;padding:50px 57px;box-shadow:0px 1px 40px rgba(0,0,0,0.1),0px 1px 1px rgba(0,0,0,0.1)}
-.card-title{font-size:32px;font-weight:700;color:var(--text);text-align:center;margin-bottom:8px;letter-spacing:-0.11px}
-.card-subtitle{font-size:18px;font-weight:600;color:var(--text);text-align:center;opacity:0.8;margin-bottom:32px}
-.role-label{font-size:18px;font-weight:600;color:var(--text);opacity:0.8;margin-bottom:10px}
-.role-tabs{display:flex;gap:25px;margin-bottom:28px;padding-top:10px}
-.role-tab{flex:0 0 115px;padding:10px;text-align:center;font-size:20px;font-weight:500;color:var(--text-secondary);background:var(--bg-input);border:none;border-radius:8px;cursor:pointer;transition:all .25s ease;font-family:var(--font)}
-.role-tab.active{background:var(--green);color:#fff}
-.f-grp{margin-top:28px}.f-grp-sm{margin-top:24px}
-.f-lbl{font-size:18px;font-weight:600;color:var(--text);opacity:0.8;margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline}
-.f-lbl a{font-size:18px;font-weight:600;color:var(--text);opacity:0.6;text-decoration:none}.f-lbl a:hover{color:var(--green);opacity:1}
-.f-inp{width:100%;height:56px;background:var(--bg-input);border:0.635px solid var(--border-input);border-radius:8px;padding:0 16px;font-size:18px;font-family:var(--font);color:var(--text);outline:none}.f-inp:focus{border-color:var(--green)}
-.f-inp::placeholder{color:var(--text-muted)}.f-inp.error{border-color:#ff2056}
-.remember-row{display:flex;align-items:center;gap:12px;cursor:pointer;padding:24px 0 28px}
-.chk-wrap{width:24px;height:24px;border:0.635px solid #a3a3a3;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}.chk-wrap.checked{background:var(--green);border-color:var(--green)}
-.chk-wrap svg{width:14px;height:14px;opacity:0}.chk-wrap.checked svg{opacity:1}.rm-lbl{font-size:18px;font-weight:600;color:var(--text);opacity:0.6;user-select:none}
-.btn-signin{width:100%;height:56px;background:var(--green);border:none;border-radius:8px;font-size:20px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--font)}.btn-signin:hover{opacity:0.9}
-.bottom-link{text-align:center;margin-top:24px;font-size:18px;font-weight:600;color:var(--text);opacity:0.65}.bottom-link a{font-weight:700;text-decoration:underline;cursor:pointer;background:linear-gradient(to bottom,var(--green),#bedc7c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.success-overlay{position:fixed;inset:0;background:rgba(255,255,255,0.97);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .3s ease}.success-overlay.show{opacity:1;pointer-events:auto}
-.s-icon{width:72px;height:72px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:36px;color:#fff;animation:popIn .4s cubic-bezier(0.34,1.56,0.64,1)}@keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
-.s-msg{font-size:22px;font-weight:700;color:var(--text);margin-top:18px}.s-sub{font-size:15px;color:var(--text-muted);margin-top:6px}
-.toast-container{position:fixed;top:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px}
-.toast{background:#fff;border-radius:16px;padding:12px 16px;box-shadow:0 4px 16px rgba(0,0,0,0.07);font-size:13px;font-weight:500;animation:slideIn .2s ease;max-width:360px}@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-@media(max-width:680px){.login-card{width:calc(100vw-32px);padding:32px 24px}.role-tabs{gap:12px}.role-tab{flex:auto;padding:8px 12px;font-size:16px}.card-title{font-size:24px}}
+/* ===== 扬帆 Sign-In — Landing Page Design System ===== */
+:root {
+  --g50:  oklch(0.97 0.025 145);  --g100: oklch(0.94 0.05 145);
+  --g200: oklch(0.88 0.09 145);  --g300: oklch(0.78 0.13 145);
+  --g400: oklch(0.70 0.16 145);  --g500: oklch(0.65 0.18 145);
+  --g600: oklch(0.55 0.15 145);  --g700: oklch(0.44 0.13 145);
+  --g800: oklch(0.34 0.10 145);  --g900: oklch(0.25 0.07 145);
+
+  --n0: oklch(1 0 0);            --n50: oklch(0.988 0.004 96);
+  --n100: oklch(0.968 0.006 96);  --n200: oklch(0.925 0.010 96);
+  --n300: oklch(0.865 0.012 96);  --n400: oklch(0.725 0.012 96);
+  --n500: oklch(0.585 0.012 96);  --n600: oklch(0.465 0.010 96);
+  --n700: oklch(0.345 0.008 96);  --n800: oklch(0.225 0.006 96);
+  --n900: oklch(0.135 0.004 96);
+
+  --danger: oklch(0.55 0.19 18);
+  --font: 'DM Sans', 'Inter', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--font); background: var(--n50); color: var(--n800);
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  overflow: hidden; position: relative;
+}
+
+/* ===== Decorative Blobs (matching landing page) ===== */
+.blobs { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+.blob { position: absolute; border-radius: 50%; animation: blobFloat 16s ease-in-out infinite; }
+.blob-1 { width: 600px; height: 600px; top: -15%; right: -10%;
+  background: radial-gradient(circle, oklch(0.65 0.18 145 / 0.18), transparent 70%);
+  animation-delay: 0s; }
+.blob-2 { width: 500px; height: 500px; bottom: -12%; left: -8%;
+  background: radial-gradient(circle, oklch(0.78 0.14 83 / 0.14), transparent 70%);
+  animation-delay: 3s; animation-duration: 18s; }
+.blob-3 { width: 400px; height: 400px; top: 40%; left: 55%;
+  background: radial-gradient(circle, oklch(0.69 0.10 230 / 0.10), transparent 70%);
+  animation-delay: 6s; animation-duration: 14s; }
+
+@keyframes blobFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%  { transform: translate(30px, -30px) scale(1.05); }
+  50%  { transform: translate(-20px, 20px) scale(0.95); }
+  75%  { transform: translate(-30px, -10px) scale(1.02); }
+}
+
+/* ===== Card ===== */
+.wrapper { position: relative; z-index: 1; animation: fadeIn 0.5s ease both; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.card {
+  width: 440px; max-width: calc(100vw - 32px);
+  background: rgba(255,255,255,0.82); backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 20px; padding: 40px 36px;
+  box-shadow: 0 4px 24px oklch(0 0 0 / 0.05), 0 1px 2px oklch(0 0 0 / 0.04);
+}
+
+/* ===== Headline ===== */
+.brand { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px; }
+.brand-icon {
+  width: 32px; height: 32px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--g400), var(--g600));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 16px;
+}
+.card-title { font-size: 22px; font-weight: 700; color: var(--n800); text-align: center; letter-spacing: -0.3px; }
+.card-subtitle { font-size: 14px; font-weight: 500; color: var(--n500); text-align: center; margin-bottom: 24px; }
+
+/* ===== Mode Tabs ===== */
+.mode-tabs { display: flex; gap: 4px; margin-bottom: 22px; background: var(--n100); border-radius: 12px; padding: 4px; }
+.mode-tab {
+  flex: 1; padding: 8px 12px; text-align: center;
+  font-size: 13px; font-weight: 600; font-family: var(--font);
+  color: var(--n500); background: transparent; border: none;
+  border-radius: 9px; cursor: pointer; transition: all 0.2s ease;
+}
+.mode-tab.active { background: #fff; color: var(--n800); box-shadow: 0 1px 3px oklch(0 0 0 / 0.08); }
+
+/* ===== Role Selector ===== */
+.role-label { font-size: 13px; font-weight: 600; color: var(--n500); margin-bottom: 8px; }
+.role-tabs { display: flex; gap: 10px; margin-bottom: 24px; }
+.role-tab {
+  flex: 1; padding: 10px 8px; text-align: center;
+  font-size: 14px; font-weight: 600; font-family: var(--font);
+  color: var(--n500); background: var(--n100); border: 1.5px solid transparent;
+  border-radius: 10px; cursor: pointer; transition: all 0.2s ease;
+}
+.role-tab:hover { background: var(--n200); }
+.role-tab.active { background: var(--g50); border-color: var(--g300); color: var(--g600); }
+
+/* ===== Form Fields ===== */
+.f-grp { margin-bottom: 18px; }
+.f-lbl { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; font-weight: 600; color: var(--n600); margin-bottom: 6px; }
+.f-lbl a { font-size: 12px; font-weight: 500; color: var(--n400); text-decoration: none; transition: color 0.2s; }
+.f-lbl a:hover { color: var(--g500); }
+.f-inp {
+  width: 100%; height: 44px; padding: 0 14px;
+  background: var(--n50); border: 1.5px solid var(--n200);
+  border-radius: 10px; font-size: 14px; font-family: var(--font); color: var(--n800);
+  outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.f-inp::placeholder { color: var(--n400); }
+.f-inp:focus { border-color: var(--g400); box-shadow: 0 0 0 3px oklch(0.65 0.18 145 / 0.12); }
+.f-inp.error { border-color: var(--danger); box-shadow: 0 0 0 3px oklch(0.55 0.19 18 / 0.1); }
+
+/* ===== Remember Me ===== */
+.remember-row { display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 22px; padding-top: 2px; }
+.chk-wrap {
+  width: 20px; height: 20px; border: 1.5px solid var(--n300); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.chk-wrap.checked { background: var(--g500); border-color: var(--g500); }
+.chk-wrap svg { width: 12px; height: 12px; opacity: 0; transition: opacity 0.15s; }
+.chk-wrap.checked svg { opacity: 1; }
+.rm-lbl { font-size: 13px; font-weight: 500; color: var(--n500); user-select: none; }
+
+/* ===== Submit Button (matching Hero.jsx CTA) ===== */
+.btn-submit {
+  width: 100%; height: 46px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--g500); border: none; border-radius: 9999px;
+  color: #fff; font-size: 14px; font-weight: 700; font-family: var(--font);
+  cursor: pointer;
+  box-shadow: 0 4px 16px oklch(0.65 0.18 145 / 0.28);
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.btn-submit:hover { background: var(--g600); transform: translateY(-1px); box-shadow: 0 6px 24px oklch(0.65 0.18 145 / 0.4); }
+.btn-submit:active { transform: scale(0.97); }
+
+/* ===== Bottom Link ===== */
+.bottom-link { text-align: center; margin-top: 22px; font-size: 13px; font-weight: 500; color: var(--n500); }
+.bottom-link a { font-weight: 600; color: var(--g600); text-decoration: none; cursor: pointer; transition: color 0.2s; }
+.bottom-link a:hover { color: var(--g700); }
+
+/* ===== Success Overlay ===== */
+.success-overlay {
+  position: fixed; inset: 0; background: rgba(255,255,255,0.97); z-index: 100;
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
+}
+.success-overlay.show { opacity: 1; pointer-events: auto; }
+.s-icon {
+  width: 64px; height: 64px; border-radius: 50%; background: var(--g500);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; color: #fff;
+  animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+.s-msg { font-size: 18px; font-weight: 700; color: var(--n800); margin-top: 16px; }
+.s-sub { font-size: 14px; color: var(--n500); margin-top: 6px; }
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .card { padding: 28px 20px; border-radius: 16px; }
+  .card-title { font-size: 20px; }
+  .role-tab { font-size: 13px; padding: 8px 6px; }
+}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
 </style>
 </head>
 <body>
-<div class="bg-shapes"><div class="bg-shape s1"></div><div class="bg-shape s2"></div><div class="bg-shape s3"></div><div class="bg-shape s4"></div><div class="bg-shape s5"></div></div>
-<div class="login-wrapper"><div class="login-card">
-<h1 class="card-title">登录账户</h1><p class="card-subtitle">请输入邮箱和密码以继续</p>
-<p class="role-label">身份选择</p>
-<div class="role-tabs">
-<button class="role-tab active" data-role="mentor" onclick="sel('mentor',this)">导师</button>
-<button class="role-tab" data-role="intern" onclick="sel('intern',this)">实习生</button>
-<button class="role-tab" data-role="hr" onclick="sel('hr',this)">HR</button>
+
+<div class="blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
 </div>
-<div class="f-grp"><label class="f-lbl">邮箱地址：</label><input class="f-inp" type="email" id="email" placeholder="请输入邮箱地址" autocomplete="email"></div>
-<div class="f-grp-sm"><label class="f-lbl">密码 <a href="#">忘记密码？</a></label><input class="f-inp" type="password" id="pw" placeholder="············" autocomplete="current-password"></div>
-<div class="remember-row" onclick="togRemember()"><div class="chk-wrap" id="chk"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2"><polyline points="3,7 6,10 11,4"/></svg></div><span class="rm-lbl">记住密码</span></div>
-<button class="btn-signin" onclick="signIn()">登录</button>
-<p class="bottom-link">还没有账户？ <a href="#">创建账户</a></p>
-</div></div>
-<div class="success-overlay" id="success"><div class="s-icon">✓</div><div class="s-msg">登录成功！</div><div class="s-sub" id="sSub">正在跳转...</div></div>
-<div class="toast-container" id="toasts"></div>
+
+<div class="wrapper">
+  <div class="card">
+    <div class="brand">
+      <div class="brand-icon">⛵</div>
+      <span style="font-weight:600;font-size:15px;color:var(--n800);">扬帆</span>
+    </div>
+    <h1 class="card-title" id="cardTitle">登录</h1>
+    <p class="card-subtitle" id="cardSubtitle">请输入邮箱和密码以继续</p>
+
+    <!-- Mode Tabs -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="signin" onclick="switchMode('signin')">登录</button>
+      <button class="mode-tab" data-mode="register" onclick="switchMode('register')">创建账户</button>
+    </div>
+
+    <!-- Role Selector -->
+    <p class="role-label">选择身份</p>
+    <div class="role-tabs">
+      <button class="role-tab active" data-role="mentor" onclick="sel('mentor',this)">导师</button>
+      <button class="role-tab" data-role="intern" onclick="sel('intern',this)">实习生</button>
+      <button class="role-tab" data-role="hr" onclick="sel('hr',this)">HR</button>
+    </div>
+
+    <!-- 姓名 (register only) -->
+    <div class="f-grp" id="nameGroup" style="display:none">
+      <label class="f-lbl">姓名</label>
+      <input class="f-inp" type="text" id="name" placeholder="请输入姓名" autocomplete="name">
+    </div>
+
+    <!-- Email -->
+    <div class="f-grp">
+      <label class="f-lbl">邮箱地址</label>
+      <input class="f-inp" type="email" id="email" placeholder="请输入邮箱地址" autocomplete="email">
+    </div>
+
+    <!-- Password -->
+    <div class="f-grp">
+      <label class="f-lbl">
+        密码
+        <a href="#" id="forgotLink">忘记密码？</a>
+      </label>
+      <input class="f-inp" type="password" id="pw" placeholder="············" autocomplete="current-password">
+    </div>
+
+    <!-- Remember Me (sign-in only) -->
+    <div class="remember-row" id="rememberRow" onclick="togRemember()">
+      <div class="chk-wrap" id="chk"><svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="3,7 6,10 11,4"/></svg></div>
+      <span class="rm-lbl">记住密码</span>
+    </div>
+
+    <!-- Submit -->
+    <button class="btn-submit" id="actionBtn" onclick="handleSubmit()">
+      <span id="btnText">登录</span>
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+    </button>
+
+    <p class="bottom-link" id="bottomLink">
+      还没有账户？ <a href="#" onclick="switchMode('register');return false;">创建账户</a>
+    </p>
+  </div>
+</div>
+
+<!-- Success Overlay -->
+<div class="success-overlay" id="success">
+  <div class="s-icon">✓</div>
+  <div class="s-msg" id="sMsg">登录成功！</div>
+  <div class="s-sub" id="sSub">正在跳转...</div>
+</div>
+
 <script>
-var params=new URLSearchParams(window.location.search);
-var urlRole=params.get('role');
-var role=(urlRole==='mentor'||urlRole==='intern'||urlRole==='hr')?urlRole:'mentor';
-var rm=false;
-document.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.role-tab').forEach(function(t){t.classList.toggle('active',t.dataset.role===role);});});
-function sel(r,b){role=r;document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));b.classList.add('active')}
-function togRemember(){rm=!rm;document.getElementById('chk').classList.toggle('checked',rm)}
-function signIn(){
-const e=document.getElementById('email').value.trim(),p=document.getElementById('pw').value.trim();
-if(!e){document.getElementById('email').classList.add('error');setTimeout(()=>document.getElementById('email').classList.remove('error'),1500);return}
-if(!p){document.getElementById('pw').classList.add('error');setTimeout(()=>document.getElementById('pw').classList.remove('error'),1500);return}
-const r={mentor:'mentor_dashboard.html',intern:'intern.html',hr:'hr_v3_dashboard.html'},n={mentor:'扬帆 导师工作台',intern:'扬帆 实习生系统',hr:'扬帆 HR管理'};
-document.getElementById('sSub').textContent='正在跳转到 '+n[role];document.getElementById('success').classList.add('show');
-setTimeout(()=>{window.location.href=r[role]},1000);
+// ===== State =====
+var params = new URLSearchParams(window.location.search);
+var urlRole = params.get('role');
+var role = (urlRole === 'mentor' || urlRole === 'intern' || urlRole === 'hr') ? urlRole : 'mentor';
+var mode = 'signin';
+var rm = false;
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.role-tab').forEach(function (t) {
+    t.classList.toggle('active', t.dataset.role === role);
+  });
+});
+
+// ===== Role Selection =====
+function sel(r, b) {
+  role = r;
+  document.querySelectorAll('.role-tab').forEach(function (t) { t.classList.remove('active'); });
+  b.classList.add('active');
 }
-,2000)}
-document.addEventListener('keydown',e=>{if(e.key==='Enter')signIn()});
+
+// ===== Mode Switching =====
+function switchMode(newMode) {
+  if (mode === newMode) return;
+  mode = newMode;
+  var isSignin = (mode === 'signin');
+
+  document.querySelectorAll('.mode-tab').forEach(function (t) {
+    t.classList.toggle('active', t.dataset.mode === mode);
+  });
+
+  document.getElementById('cardTitle').textContent = isSignin ? '登录' : '创建账户';
+  document.getElementById('cardSubtitle').textContent = isSignin
+    ? '请输入邮箱和密码以继续'
+    : '填写账户信息以开始使用';
+
+  document.getElementById('nameGroup').style.display = isSignin ? 'none' : 'block';
+  document.getElementById('rememberRow').style.display = isSignin ? 'flex' : 'none';
+  document.getElementById('forgotLink').style.display = isSignin ? 'inline' : 'none';
+
+  document.getElementById('btnText').textContent = isSignin ? '登录' : '创建账户';
+
+  document.getElementById('bottomLink').innerHTML = isSignin
+    ? "还没有账户？ <a href=\"#\" onclick=\"switchMode('register');return false;\">创建账户</a>"
+    : "已有账户？ <a href=\"#\" onclick=\"switchMode('signin');return false;\">登录</a>";
+
+  // Clear fields
+  document.getElementById('email').value = '';
+  document.getElementById('pw').value = '';
+  var nameEl = document.getElementById('name');
+  if (nameEl) nameEl.value = '';
+  document.querySelectorAll('.f-inp').forEach(function (el) { el.classList.remove('error'); });
+  rm = false;
+  document.getElementById('chk').classList.remove('checked');
+}
+
+// ===== Remember Me =====
+function togRemember() {
+  rm = !rm;
+  document.getElementById('chk').classList.toggle('checked', rm);
+}
+
+// ===== Validation =====
+function showError(el) {
+  el.classList.add('error');
+  setTimeout(function () { el.classList.remove('error'); }, 1500);
+}
+
+// ===== Submit =====
+function handleSubmit() {
+  var emailEl = document.getElementById('email');
+  var pwEl = document.getElementById('pw');
+  var nameEl = document.getElementById('name');
+
+  var email = emailEl.value.trim();
+  var pw = pwEl.value.trim();
+
+  if (!email) { showError(emailEl); return; }
+  if (mode === 'register') {
+    var name = nameEl.value.trim();
+    if (!name) { showError(nameEl); return; }
+  }
+  if (!pw) { showError(pwEl); return; }
+  if (mode === 'register' && pw.length < 6) { showError(pwEl); return; }
+
+  var dashboards = { mentor: 'mentor_dashboard.html', intern: 'intern.html', hr: 'hr_v3_dashboard.html' };
+  var dashboardNames = { mentor: '扬帆导师工作台', intern: '扬帆实习生系统', hr: '扬帆HR管理' };
+
+  document.getElementById('sMsg').textContent = (mode === 'register')
+    ? '账户创建成功！'
+    : '登录成功！';
+  document.getElementById('sSub').textContent = '正在跳转到 ' + dashboardNames[role] + '...';
+  document.getElementById('success').classList.add('show');
+
+  setTimeout(function () { window.location.href = dashboards[role]; }, 1200);
+}
+
+// ===== Enter Key =====
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') handleSubmit();
+});
 </script>
-</body></html>
+
+</body>
+</html>
